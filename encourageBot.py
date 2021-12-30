@@ -3,11 +3,20 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
+import random
 
 load_dotenv()
 
 '''connection to discord'''
 client=discord.Client()
+
+sad_words = ["sad", "depressed", "unhappy", "angry", "miserable", "depressing"]
+
+starter_encouragements = [
+    "Cheer Up!",
+    "Hang in there.",
+    "You are a great person / bot!"
+]
 
 def get_quote(): # return a quote from api
     response = requests.get("https://zenquotes.io/api/random")
@@ -28,9 +37,12 @@ async def on_message(message):
         return
     '''if message.content.startswith('$hello'):
         await message.channel.send('Hello!')'''
-    if message.content.startswith('$inspire'):
+    msg=message.content
+    if msg.startswith('$inspire'):
         quote = get_quote()
         await message.channel.send(quote)
+    if any(word in msg for word in sad_words):
+        await message.channel.send(random.choice(starter_encouragements))
         
 TOKEN = os.getenv('TOKEN')
 client.run(TOKEN)
